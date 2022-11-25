@@ -3,6 +3,8 @@ part of 'quiz_bloc.dart';
 
 abstract class QuizEvent {}
 
+class QuizStarted extends QuizEvent {}
+
 class CountryEntered extends QuizEvent {
   final Country country;
   CountryEntered({
