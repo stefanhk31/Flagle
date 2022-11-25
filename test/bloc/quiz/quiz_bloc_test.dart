@@ -22,6 +22,8 @@ void main() {
       expect(QuizBloc(countriesBloc).state, equals(QuizState.initial()));
     });
 
+
+    //TODO: make this into a regular test so we can check that the country is not null without caring about its specific value
     blocTest<QuizBloc, QuizState>(
       'emits updated quiz state when quiz is started',
       build: () => QuizBloc(countriesBloc),
