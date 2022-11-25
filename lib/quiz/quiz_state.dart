@@ -12,9 +12,9 @@ class QuizState extends Equatable {
   });
 
   factory QuizState.initial() {
-    return const QuizState(
+    return QuizState(
       attempts: 0,
-      maxAttempts: 6,
+      maxAttempts: Constants.maxAttempts,
     );
   }
 
