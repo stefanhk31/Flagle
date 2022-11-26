@@ -36,3 +36,13 @@ class QuizState extends Equatable {
     );
   }
 }
+
+class QuizWon extends QuizState {
+  const QuizWon({required int attempts, required int maxAttempts})
+      : super(attempts: attempts, maxAttempts: maxAttempts);
+}
+
+class QuizLost extends QuizState {
+  const QuizLost({required int attempts, required int maxAttempts})
+      : super(attempts: attempts, maxAttempts: maxAttempts);
+}
