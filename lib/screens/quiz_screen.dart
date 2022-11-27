@@ -1,8 +1,10 @@
 import 'package:flagle/countries/countries_bloc.dart';
 import 'package:flagle/data/country_repository.dart';
+import 'package:flagle/data/models/country.dart';
 import 'package:flagle/quiz/quiz_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class QuizScreen extends StatelessWidget {
@@ -35,12 +37,61 @@ class QuizScreen extends StatelessWidget {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else {}
+          } else {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Flagle'),
+              ),
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: getFlagWidget(widget.answer.flagSrc)),
+                  Expanded(
+                    child: Center(
+                      child: Autocomplete<String>(
+                        optionsBuilder: (TextEditingValue textEditingValue) {
+                          List<Country> matches = [];
+
+                          if (textEditingValue.text.length > 2) {
+                            matches = widget.countries
+                                .where(
+                                  (Country c) => c.name.toLowerCase().contains(
+                                        textEditingValue.text.toLowerCase(),
+                                      ),
+                                )
+                                .toList();
+                          }
+
+                          List<String> names = [];
+                          for (var m in matches) {
+                            names.add(m.name);
+                          }
+
+                          return names;
+                        },
+                        onSelected: (name) {
+                          debugPrint('You just selected $name');
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            );
+          }
           return const Center(
             child: CircularProgressIndicator(),
           );
         },
       ),
     );
+  }
+
+  Widget getFlagWidget(String imgSrc) {
+    if (imgSrc.endsWith('png')) {
+      return Image.network(imgSrc);
+    }
+    return SvgPicture.network(imgSrc);
   }
 }
