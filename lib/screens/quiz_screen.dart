@@ -27,8 +27,9 @@ class QuizScreen extends StatelessWidget {
       ],
       child: BlocBuilder<CountriesBloc, CountriesState>(
         builder: (context, state) {
-          context.read<CountriesBloc>().add(CountriesLoadStarted());
-
+          if (state.countries.isEmpty) {
+            context.read<CountriesBloc>().add(CountriesLoadStarted());
+          }
           if (state is CountriesErrorState) {
             return const Center(
               child: Text('Oops! Something went wrong.'),
@@ -38,51 +39,69 @@ class QuizScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Flagle'),
-              ),
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(child: getFlagWidget(widget.answer.flagSrc)),
-                  Expanded(
-                    child: Center(
-                      child: Autocomplete<String>(
-                        optionsBuilder: (TextEditingValue textEditingValue) {
-                          List<Country> matches = [];
-
-                          if (textEditingValue.text.length > 2) {
-                            matches = widget.countries
-                                .where(
-                                  (Country c) => c.name.toLowerCase().contains(
-                                        textEditingValue.text.toLowerCase(),
-                                      ),
-                                )
-                                .toList();
-                          }
-
-                          List<String> names = [];
-                          for (var m in matches) {
-                            names.add(m.name);
-                          }
-
-                          return names;
-                        },
-                        onSelected: (name) {
-                          debugPrint('You just selected $name');
-                        },
-                      ),
+            return BlocConsumer<QuizBloc, QuizState>(
+              listener: (context, state) {},
+              builder: ((context, state) {
+                if (state.country != null) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Flagle'),
                     ),
-                  )
-                ],
-              ),
+                    body: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                            child: getFlagWidget(context
+                                .read<QuizBloc>()
+                                .state
+                                .country!
+                                .flagSrc)),
+                        Expanded(
+                          child: Center(
+                            child: Autocomplete<Country>(
+                              displayStringForOption: (country) => country.name,
+                              optionsBuilder:
+                                  (TextEditingValue textEditingValue) {
+                                List<Country> matches = [];
+                                if (textEditingValue.text.length > 2) {
+                                  matches = context
+                                      .read<QuizBloc>()
+                                      .countriesBloc
+                                      .state
+                                      .countries
+                                      .where(
+                                        (Country c) =>
+                                            c.name.toLowerCase().contains(
+                                                  textEditingValue.text
+                                                      .toLowerCase(),
+                                                ),
+                                      )
+                                      .toList();
+                                }
+
+                                return matches;
+                              },
+                              onSelected: (country) {
+                                context
+                                    .read<QuizBloc>()
+                                    .add(CountryEntered(country: country));
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                } else {
+                  context.read<QuizBloc>().add(QuizStarted());
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              }),
             );
           }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
         },
       ),
     );
