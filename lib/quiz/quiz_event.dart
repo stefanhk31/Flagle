@@ -11,10 +11,3 @@ class CountryEntered extends QuizEvent {
     required this.country,
   });
 }
-
-class QuizCompleted extends QuizEvent {
-  final bool success;
-  QuizCompleted({
-    required this.success,
-  });
-}

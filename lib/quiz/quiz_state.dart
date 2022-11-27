@@ -38,11 +38,38 @@ class QuizState extends Equatable {
 }
 
 class QuizWon extends QuizState {
-  const QuizWon({required int attempts, required int maxAttempts})
-      : super(attempts: attempts, maxAttempts: maxAttempts);
+  const QuizWon({
+    required int attempts,
+    required int maxAttempts,
+    required Country country,
+  }) : super(
+          attempts: attempts,
+          maxAttempts: maxAttempts,
+          country: country,
+        );
 }
 
 class QuizLost extends QuizState {
-  const QuizLost({required int attempts, required int maxAttempts})
-      : super(attempts: attempts, maxAttempts: maxAttempts);
+  const QuizLost({
+    required int attempts,
+    required int maxAttempts,
+    required Country country,
+  }) : super(
+          attempts: attempts,
+          maxAttempts: maxAttempts,
+          country: country,
+        );
+}
+
+class QuizError extends QuizState {
+  final String errorMessage;
+
+  const QuizError({
+    required this.errorMessage,
+    required int attempts,
+    required int maxAttempts,
+  }) : super(
+          attempts: attempts,
+          maxAttempts: maxAttempts,
+        );
 }

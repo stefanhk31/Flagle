@@ -14,14 +14,20 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
 
   QuizBloc(this.countriesBloc) : super(QuizState.initial()) {
     on<QuizEvent>((event, emit) {
-      if (event is QuizStarted) {
-        _handleQuizStarted(event, emit);
-      }
-      if (event is CountryEntered) {
-        _handleCountryEntered(event, emit);
-      }
-      if (event is QuizCompleted) {
-        _handleQuizCompleted(event, emit);
+      try {
+        if (event is QuizStarted) {
+          _handleQuizStarted(event, emit);
+        }
+        if (event is CountryEntered) {
+          _handleCountryEntered(event, emit);
+        }
+      } on Exception catch (e) {
+        emit(
+          QuizError(
+              errorMessage: e.toString(),
+              attempts: state.attempts,
+              maxAttempts: state.maxAttempts),
+        );
       }
     });
   }
@@ -32,7 +38,29 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     emit(state.copyWith(country: countries[index]));
   }
 
-  void _handleCountryEntered(CountryEntered event, Emitter<QuizState> emit) {}
+  void _handleCountryEntered(CountryEntered event, Emitter<QuizState> emit) {
+    if (state.country == null) {
+      throw Exception(Constants.countryNullError);
+    }
 
-  void _handleQuizCompleted(QuizCompleted event, Emitter<QuizState> emit) {}
+    var updatedAttempts = state.attempts + 1;
+
+    if (event.country.name == state.country!.name) {
+      emit(QuizWon(
+        attempts: updatedAttempts,
+        maxAttempts: Constants.maxAttempts,
+        country: state.country!,
+      ));
+    } else if (updatedAttempts == Constants.maxAttempts) {
+      emit(QuizLost(
+        attempts: updatedAttempts,
+        maxAttempts: Constants.maxAttempts,
+        country: state.country!,
+      ));
+    } else {
+      emit(state.copyWith(
+        attempts: updatedAttempts,
+      ));
+    }
+  }
 }
