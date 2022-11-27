@@ -35,7 +35,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
   void _handleQuizStarted(QuizStarted event, Emitter<QuizState> emit) {
     var countries = countriesBloc.state.countries;
     var index = Random().nextInt(countries.length);
-    emit(state.copyWith(country: countries[index]));
+    emit(state.copyWith(attempts: 0, country: countries[index]));
   }
 
   void _handleCountryEntered(CountryEntered event, Emitter<QuizState> emit) {

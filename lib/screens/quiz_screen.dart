@@ -1,3 +1,4 @@
+import 'package:flagle/constants/constants.dart';
 import 'package:flagle/countries/countries_bloc.dart';
 import 'package:flagle/data/country_repository.dart';
 import 'package:flagle/data/models/country.dart';
@@ -42,7 +43,6 @@ class QuizScreen extends StatelessWidget {
             return BlocConsumer<QuizBloc, QuizState>(
               listener: (context, state) {
                 void restart() => context.read<QuizBloc>().add(QuizStarted());
-
                 if (state is QuizWon) {
                   showEndOfGameDialog('You Won!', restart, context);
                 } else if (state is QuizLost) {
@@ -51,6 +51,9 @@ class QuizScreen extends StatelessWidget {
               },
               builder: ((context, state) {
                 if (state.country != null) {
+                  var attemptsRemaining =
+                      context.read<QuizBloc>().state.maxAttempts -
+                          context.read<QuizBloc>().state.attempts;
                   return Scaffold(
                     appBar: AppBar(
                       title: const Text('Flagle'),
@@ -59,6 +62,15 @@ class QuizScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '$attemptsRemaining out of ${Constants.maxAttempts} attempts left.',
+                              style: const TextStyle(fontSize: 18.0),
+                            ),
+                          ),
+                        ),
                         Expanded(
                             child: getFlagWidget(context
                                 .read<QuizBloc>()
