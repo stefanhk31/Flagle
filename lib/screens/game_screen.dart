@@ -30,7 +30,7 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flagle'),
+        title: const Text('Flagle'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
