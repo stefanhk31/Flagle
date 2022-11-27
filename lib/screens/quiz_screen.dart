@@ -2,9 +2,9 @@ import 'package:flagle/countries/countries_bloc.dart';
 import 'package:flagle/data/country_repository.dart';
 import 'package:flagle/quiz/quiz_bloc.dart';
 import 'package:flagle/screens/widgets/widgets.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class QuizScreen extends StatelessWidget {
@@ -104,12 +104,5 @@ class QuizScreen extends StatelessWidget {
                 ),
               ],
             ));
-  }
-
-  Widget getFlagWidget(String imgSrc) {
-    if (imgSrc.endsWith('png')) {
-      return Image.network(imgSrc);
-    }
-    return SvgPicture.network(imgSrc);
   }
 }
