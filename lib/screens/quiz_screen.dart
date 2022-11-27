@@ -40,7 +40,15 @@ class QuizScreen extends StatelessWidget {
             );
           } else {
             return BlocConsumer<QuizBloc, QuizState>(
-              listener: (context, state) {},
+              listener: (context, state) {
+                void restart() => context.read<QuizBloc>().add(QuizStarted());
+
+                if (state is QuizWon) {
+                  showEndOfGameDialog('You Won!', restart, context);
+                } else if (state is QuizLost) {
+                  showEndOfGameDialog('You Lost. :(', restart, context);
+                }
+              },
               builder: ((context, state) {
                 if (state.country != null) {
                   return Scaffold(
@@ -105,6 +113,26 @@ class QuizScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void showEndOfGameDialog(
+      String title, Function restart, BuildContext context) {
+    var countryName = context.read<QuizBloc>().state.country!.name;
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(title),
+              content: Text('This is the flag of $countryName.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, 'Play Again!');
+                    restart();
+                  },
+                  child: const Text('Play Again!'),
+                ),
+              ],
+            ));
   }
 
   Widget getFlagWidget(String imgSrc) {
