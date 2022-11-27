@@ -1,8 +1,7 @@
-import 'package:flagle/constants/constants.dart';
 import 'package:flagle/countries/countries_bloc.dart';
 import 'package:flagle/data/country_repository.dart';
-import 'package:flagle/data/models/country.dart';
 import 'package:flagle/quiz/quiz_bloc.dart';
+import 'package:flagle/screens/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -62,54 +61,14 @@ class QuizScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              '$attemptsRemaining out of ${Constants.maxAttempts} attempts left.',
-                              style: const TextStyle(fontSize: 18.0),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                            child: getFlagWidget(context
+                        StatusHeader(attemptsRemaining: attemptsRemaining),
+                        FlagImage(
+                            imgSrc: context
                                 .read<QuizBloc>()
                                 .state
                                 .country!
-                                .flagSrc)),
-                        Expanded(
-                          child: Center(
-                            child: Autocomplete<Country>(
-                              displayStringForOption: (country) => country.name,
-                              optionsBuilder:
-                                  (TextEditingValue textEditingValue) {
-                                List<Country> matches = [];
-                                if (textEditingValue.text.length > 2) {
-                                  matches = context
-                                      .read<QuizBloc>()
-                                      .countriesBloc
-                                      .state
-                                      .countries
-                                      .where(
-                                        (Country c) =>
-                                            c.name.toLowerCase().contains(
-                                                  textEditingValue.text
-                                                      .toLowerCase(),
-                                                ),
-                                      )
-                                      .toList();
-                                }
-
-                                return matches;
-                              },
-                              onSelected: (country) {
-                                context
-                                    .read<QuizBloc>()
-                                    .add(CountryEntered(country: country));
-                              },
-                            ),
-                          ),
-                        )
+                                .flagSrc),
+                        const CountryEntryField(),
                       ],
                     ),
                   );
