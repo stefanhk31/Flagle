@@ -13,13 +13,18 @@ class MockCountriesBloc extends MockBloc<CountriesEvent, CountriesState>
 
 void main() {
   late CountriesBloc countriesBloc;
+  late List<Country> testCountries;
+  late Country testQuizLostCountry;
   Country? result;
 
   group('Quiz Bloc', () {
     setUp(() {
       countriesBloc = MockCountriesBloc();
+      testCountries = TestUtilities.generateTestCountries(2);
+      testQuizLostCountry =
+          TestUtilities.generateCountry(Constants.maxAttempts + 1);
       when(() => countriesBloc.state).thenAnswer(
-        (_) => CountriesState(countries: TestUtilities.countries),
+        (_) => CountriesState(countries: testCountries),
       );
     });
 
@@ -39,7 +44,7 @@ void main() {
       },
       expect: () => [
         QuizState(
-          attempts: 0,
+          countriesEntered: const [],
           maxAttempts: Constants.maxAttempts,
           country: result!,
         )
@@ -50,20 +55,20 @@ void main() {
       'emits quiz won when correct country is entered',
       build: () => QuizBloc(countriesBloc),
       seed: () => QuizState(
-        attempts: 0,
+        countriesEntered: const [],
         maxAttempts: Constants.maxAttempts,
-        country: TestUtilities.countries[0],
+        country: testCountries[0],
       ),
       act: (bloc) async {
         bloc.add(CountryEntered(
-          country: TestUtilities.countries[0],
+          country: testCountries[0],
         ));
       },
       expect: () => [
         QuizWon(
-          attempts: 1,
+          countriesEntered: [testCountries[0]],
           maxAttempts: Constants.maxAttempts,
-          country: TestUtilities.countries[0],
+          country: testCountries[0],
         )
       ],
     );
@@ -72,20 +77,22 @@ void main() {
       'emits quiz lost when maxAttempts has been reached',
       build: () => QuizBloc(countriesBloc),
       seed: () => QuizState(
-        attempts: Constants.maxAttempts - 1,
+        countriesEntered:
+            TestUtilities.generateTestCountries(Constants.maxAttempts - 1),
         maxAttempts: Constants.maxAttempts,
-        country: TestUtilities.countries[0],
+        country: testQuizLostCountry,
       ),
       act: (bloc) async {
         bloc.add(CountryEntered(
-          country: TestUtilities.countries[1],
+          country: TestUtilities.generateCountry(Constants.maxAttempts),
         ));
       },
       expect: () => [
         QuizLost(
-          attempts: Constants.maxAttempts,
+          countriesEntered:
+              TestUtilities.generateTestCountries(Constants.maxAttempts),
           maxAttempts: Constants.maxAttempts,
-          country: TestUtilities.countries[0],
+          country: TestUtilities.generateCountry(Constants.maxAttempts + 1),
         )
       ],
     );
@@ -94,20 +101,20 @@ void main() {
       'emits state with updated attempts when an incorrect country is entered and maxAttempts has not been reached',
       build: () => QuizBloc(countriesBloc),
       seed: () => QuizState(
-        attempts: 0,
+        countriesEntered: const [],
         maxAttempts: Constants.maxAttempts,
-        country: TestUtilities.countries[0],
+        country: testCountries[0],
       ),
       act: (bloc) async {
         bloc.add(CountryEntered(
-          country: TestUtilities.countries[1],
+          country: testCountries[1],
         ));
       },
       expect: () => [
         QuizState(
-          attempts: 1,
+          countriesEntered: [testCountries[1]],
           maxAttempts: Constants.maxAttempts,
-          country: TestUtilities.countries[0],
+          country: testCountries[0],
         )
       ],
     );
@@ -118,13 +125,13 @@ void main() {
       seed: () => QuizState.initial(),
       act: (bloc) async {
         bloc.add(CountryEntered(
-          country: TestUtilities.countries[0],
+          country: testCountries[0],
         ));
       },
       expect: () => [
         QuizError(
           errorMessage: 'Exception: ${Constants.countryNullError}',
-          attempts: 0,
+          countriesEntered: const [],
           maxAttempts: Constants.maxAttempts,
         )
       ],

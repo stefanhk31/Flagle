@@ -25,7 +25,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         emit(
           QuizError(
               errorMessage: e.toString(),
-              attempts: state.attempts,
+              countriesEntered: state.countriesEntered,
               maxAttempts: state.maxAttempts),
         );
       }
@@ -35,7 +35,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
   void _handleQuizStarted(QuizStarted event, Emitter<QuizState> emit) {
     var countries = countriesBloc.state.countries;
     var index = Random().nextInt(countries.length);
-    emit(state.copyWith(attempts: 0, country: countries[index]));
+    emit(state.copyWith(countriesEntered: [], country: countries[index]));
   }
 
   void _handleCountryEntered(CountryEntered event, Emitter<QuizState> emit) {
@@ -43,23 +43,23 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
       throw Exception(Constants.countryNullError);
     }
 
-    var updatedAttempts = state.attempts + 1;
+    var currentCountriesEntered = [...state.countriesEntered, event.country];
 
     if (event.country.name == state.country!.name) {
       emit(QuizWon(
-        attempts: updatedAttempts,
+        countriesEntered: currentCountriesEntered,
         maxAttempts: Constants.maxAttempts,
         country: state.country!,
       ));
-    } else if (updatedAttempts >= Constants.maxAttempts) {
+    } else if (currentCountriesEntered.length >= Constants.maxAttempts) {
       emit(QuizLost(
-        attempts: updatedAttempts,
+        countriesEntered: currentCountriesEntered,
         maxAttempts: Constants.maxAttempts,
         country: state.country!,
       ));
     } else {
       emit(state.copyWith(
-        attempts: updatedAttempts,
+        countriesEntered: currentCountriesEntered,
       ));
     }
   }

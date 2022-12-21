@@ -1,36 +1,35 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'quiz_bloc.dart';
 
 class QuizState extends Equatable {
-  final int attempts;
+  final List<Country> countriesEntered;
   final int maxAttempts;
   final Country? country;
   const QuizState({
-    required this.attempts,
+    required this.countriesEntered,
     required this.maxAttempts,
     this.country,
   });
 
   factory QuizState.initial() {
     return QuizState(
-      attempts: 0,
+      countriesEntered: const [],
       maxAttempts: Constants.maxAttempts,
     );
   }
 
   @override
-  List<Object?> get props => [attempts, maxAttempts, country];
+  List<Object?> get props => [countriesEntered, maxAttempts, country];
 
   @override
   bool get stringify => true;
 
   QuizState copyWith({
-    int? attempts,
+    List<Country>? countriesEntered,
     int? maxAttempts,
     Country? country,
   }) {
     return QuizState(
-      attempts: attempts ?? this.attempts,
+      countriesEntered: countriesEntered ?? this.countriesEntered,
       maxAttempts: maxAttempts ?? this.maxAttempts,
       country: country ?? this.country,
     );
@@ -39,11 +38,11 @@ class QuizState extends Equatable {
 
 class QuizWon extends QuizState {
   const QuizWon({
-    required int attempts,
+    required List<Country> countriesEntered,
     required int maxAttempts,
     required Country country,
   }) : super(
-          attempts: attempts,
+          countriesEntered: countriesEntered,
           maxAttempts: maxAttempts,
           country: country,
         );
@@ -51,11 +50,11 @@ class QuizWon extends QuizState {
 
 class QuizLost extends QuizState {
   const QuizLost({
-    required int attempts,
+    required List<Country> countriesEntered,
     required int maxAttempts,
     required Country country,
   }) : super(
-          attempts: attempts,
+          countriesEntered: countriesEntered,
           maxAttempts: maxAttempts,
           country: country,
         );
@@ -66,10 +65,10 @@ class QuizError extends QuizState {
 
   const QuizError({
     required this.errorMessage,
-    required int attempts,
+    required List<Country> countriesEntered,
     required int maxAttempts,
   }) : super(
-          attempts: attempts,
+          countriesEntered: countriesEntered,
           maxAttempts: maxAttempts,
         );
 }

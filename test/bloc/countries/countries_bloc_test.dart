@@ -17,7 +17,7 @@ void main() {
   group('Countries Bloc', () {
     setUp(() {
       countryRepository = MockCountryRepository();
-      countries = TestUtilities.countries;
+      countries = TestUtilities.generateTestCountries(2);
       errorMessage = 'Could not load countries.';
     });
 

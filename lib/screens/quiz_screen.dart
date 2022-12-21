@@ -52,7 +52,7 @@ class QuizScreen extends StatelessWidget {
                 if (state.country != null) {
                   var attemptsRemaining =
                       context.read<QuizBloc>().state.maxAttempts -
-                          context.read<QuizBloc>().state.attempts;
+                          context.read<QuizBloc>().state.countriesEntered;
                   return Scaffold(
                     appBar: AppBar(
                       title: const Text('Flagle'),
