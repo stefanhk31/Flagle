@@ -15,29 +15,28 @@ class CountryEntryField extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Center(
           child: Autocomplete<Country>(
-            displayStringForOption: (country) => country.name,
-            optionsBuilder: (TextEditingValue textEditingValue) {
-              List<Country> matches = [];
-              if (textEditingValue.text.length > 2) {
-                matches = context
-                    .read<QuizBloc>()
-                    .countriesBloc
-                    .state
-                    .countries
-                    .where(
-                      (Country c) => c.name.toLowerCase().contains(
-                            textEditingValue.text.toLowerCase(),
-                          ),
-                    )
-                    .toList();
-              }
+              displayStringForOption: (country) => country.name,
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                List<Country> matches = [];
+                if (textEditingValue.text.length > 2) {
+                  matches = context
+                      .read<QuizBloc>()
+                      .countriesBloc
+                      .state
+                      .countries
+                      .where(
+                        (Country c) => c.name.toLowerCase().contains(
+                              textEditingValue.text.toLowerCase(),
+                            ),
+                      )
+                      .toList();
+                }
 
-              return matches;
-            },
-            onSelected: (country) {
-              context.read<QuizBloc>().add(CountryEntered(country: country));
-            },
-          ),
+                return matches;
+              },
+              onSelected: (country) {
+                context.read<QuizBloc>().add(CountryEntered(country: country));
+              }),
         ),
       ),
     );
