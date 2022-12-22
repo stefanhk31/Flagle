@@ -1,7 +1,6 @@
 import 'package:flagle/countries/countries_bloc.dart';
 import 'package:flagle/data/country_repository.dart';
 import 'package:flagle/quiz/quiz_bloc.dart';
-import 'package:flagle/screens/widgets/countries_entered.dart';
 import 'package:flagle/screens/widgets/widgets.dart';
 
 import 'package:flutter/material.dart';
