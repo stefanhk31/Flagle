@@ -51,10 +51,10 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         maxAttempts: Constants.maxAttempts,
         country: state.country!,
       ));
-    } else if (currentCountriesEntered.length >= Constants.maxAttempts) {
+    } else if (currentCountriesEntered.length >= state.maxAttempts) {
       emit(QuizLost(
         countriesEntered: currentCountriesEntered,
-        maxAttempts: Constants.maxAttempts,
+        maxAttempts: state.maxAttempts,
         country: state.country!,
       ));
     } else {

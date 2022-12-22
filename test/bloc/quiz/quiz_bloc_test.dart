@@ -14,15 +14,12 @@ class MockCountriesBloc extends MockBloc<CountriesEvent, CountriesState>
 void main() {
   late CountriesBloc countriesBloc;
   late List<Country> testCountries;
-  late Country testQuizLostCountry;
   Country? result;
 
   group('Quiz Bloc', () {
     setUp(() {
       countriesBloc = MockCountriesBloc();
       testCountries = TestUtilities.generateTestCountries(2);
-      testQuizLostCountry =
-          TestUtilities.generateCountry(Constants.maxAttempts + 1);
       when(() => countriesBloc.state).thenAnswer(
         (_) => CountriesState(countries: testCountries),
       );
@@ -77,22 +74,20 @@ void main() {
       'emits quiz lost when maxAttempts has been reached',
       build: () => QuizBloc(countriesBloc),
       seed: () => QuizState(
-        countriesEntered:
-            TestUtilities.generateTestCountries(Constants.maxAttempts - 1),
-        maxAttempts: Constants.maxAttempts,
-        country: testQuizLostCountry,
+        countriesEntered: const [],
+        maxAttempts: 1,
+        country: testCountries[0],
       ),
       act: (bloc) async {
         bloc.add(CountryEntered(
-          country: TestUtilities.generateCountry(Constants.maxAttempts),
+          country: testCountries[1],
         ));
       },
       expect: () => [
         QuizLost(
-          countriesEntered:
-              TestUtilities.generateTestCountries(Constants.maxAttempts),
-          maxAttempts: Constants.maxAttempts,
-          country: TestUtilities.generateCountry(Constants.maxAttempts + 1),
+          countriesEntered: [testCountries[1]],
+          maxAttempts: 1,
+          country: testCountries[0],
         )
       ],
     );
