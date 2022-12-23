@@ -70,7 +70,7 @@ class QuizScreen extends StatelessWidget {
                                 .state
                                 .country!
                                 .flagSrc),
-                        const CountryEntryField(),
+                        CountryEntryField(),
                         Expanded(
                           child: CountriesEntered(
                             countries:

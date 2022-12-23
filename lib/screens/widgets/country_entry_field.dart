@@ -4,9 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CountryEntryField extends StatelessWidget {
-  const CountryEntryField({
+  final TextEditingController _textEditingController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  final GlobalKey _autocompleteKey = GlobalKey();
+
+  CountryEntryField({
     Key? key,
   }) : super(key: key);
+
+  void clear() {
+    _textEditingController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +22,14 @@ class CountryEntryField extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
-          child: Autocomplete<Country>(
+          child: RawAutocomplete<Country>(
+              key: _autocompleteKey,
+              focusNode: _focusNode,
+              textEditingController: _textEditingController,
+              fieldViewBuilder: (context, textEditingController, focusNode,
+                  onFieldSubmitted) {
+                return const TextField();
+              },
               displayStringForOption: (country) => country.name,
               optionsBuilder: (TextEditingValue textEditingValue) {
                 List<Country> matches = [];
@@ -33,6 +48,25 @@ class CountryEntryField extends StatelessWidget {
                 }
 
                 return matches;
+              },
+              optionsViewBuilder: (context,
+                  AutocompleteOnSelected<Country> onSelected,
+                  Iterable<Country> options) {
+                return Material(
+                  elevation: 4.0,
+                  child: ListView(
+                    children: options
+                        .map((Country option) => GestureDetector(
+                              onTap: () {
+                                onSelected(option);
+                              },
+                              child: ListTile(
+                                title: Text(option.name),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                );
               },
               onSelected: (country) {
                 context.read<QuizBloc>().add(CountryEntered(country: country));
