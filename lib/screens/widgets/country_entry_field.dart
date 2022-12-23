@@ -28,7 +28,13 @@ class CountryEntryField extends StatelessWidget {
               textEditingController: _textEditingController,
               fieldViewBuilder: (context, textEditingController, focusNode,
                   onFieldSubmitted) {
-                return const TextField();
+                return TextFormField(
+                  controller: textEditingController,
+                  focusNode: focusNode,
+                  onFieldSubmitted: (String value) {
+                    onFieldSubmitted();
+                  },
+                );
               },
               displayStringForOption: (country) => country.name,
               optionsBuilder: (TextEditingValue textEditingValue) {
