@@ -1,6 +1,7 @@
 import 'package:flagle/data/models/country.dart';
 import 'package:flagle/quiz/quiz_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CountryEntryField extends StatelessWidget {
@@ -84,18 +85,32 @@ class _CountryAutocomplete extends StatelessWidget {
               itemCount: options.length,
               itemBuilder: ((context, index) {
                 final Country option = options.elementAt(index);
-                return GestureDetector(
+                return InkWell(
                   onTap: () {
                     onSelected(option);
                   },
-                  child: ListTile(
-                    title: Text(option.name),
-                  ),
+                  child: _autocompleteOptionBuilder(index, option),
                 );
               })),
         ),
       ),
     );
+  }
+
+  Builder _autocompleteOptionBuilder(int index, Country option) {
+    return Builder(builder: (context) {
+      final bool highlight = AutocompleteHighlightedOption.of(context) == index;
+      if (highlight) {
+        SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
+          Scrollable.ensureVisible(context, alignment: 0.5);
+        });
+      }
+      return Container(
+        color: highlight ? Theme.of(context).focusColor : null,
+        padding: const EdgeInsets.all(16.0),
+        child: Text(option.name),
+      );
+    });
   }
 
   Widget _fieldViewBuilder(
