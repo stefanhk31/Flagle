@@ -59,26 +59,31 @@ class QuizScreen extends StatelessWidget {
                     appBar: AppBar(
                       title: const Text('Flagle'),
                     ),
-                    body: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        StatusHeader(attemptsRemaining: attemptsRemaining),
-                        FlagImage(
-                            imgSrc: context
-                                .read<QuizBloc>()
-                                .state
-                                .country!
-                                .flagSrc),
-                        CountryEntryField(),
-                        Expanded(
-                          child: CountriesEntered(
-                            countries:
-                                context.read<QuizBloc>().state.countriesEntered,
-                            country: context.read<QuizBloc>().state.country,
+                    body: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          StatusHeader(attemptsRemaining: attemptsRemaining),
+                          FlagImage(
+                              imgSrc: context
+                                  .read<QuizBloc>()
+                                  .state
+                                  .country!
+                                  .flagSrc),
+                          CountryEntryField(),
+                          Expanded(
+                            child: CountriesEntered(
+                              countries: context
+                                  .read<QuizBloc>()
+                                  .state
+                                  .countriesEntered,
+                              country: context.read<QuizBloc>().state.country,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 } else {

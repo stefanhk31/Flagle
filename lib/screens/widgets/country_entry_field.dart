@@ -42,36 +42,33 @@ class _CountryAutocomplete extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: RawAutocomplete<Country>(
-          key: _autocompleteKey,
-          focusNode: _focusNode,
-          textEditingController: _textEditingController,
-          fieldViewBuilder: _fieldViewBuilder,
-          optionsBuilder: (TextEditingValue textEditingValue) {
-            List<Country> matches = [];
-            if (textEditingValue.text.length > 2) {
-              matches = context
-                  .read<QuizBloc>()
-                  .countriesBloc
-                  .state
-                  .countries
-                  .where(
-                    (Country c) => c.name.toLowerCase().contains(
-                          textEditingValue.text.toLowerCase(),
-                        ),
-                  )
-                  .toList();
-            }
+    return RawAutocomplete<Country>(
+        key: _autocompleteKey,
+        focusNode: _focusNode,
+        textEditingController: _textEditingController,
+        fieldViewBuilder: _fieldViewBuilder,
+        optionsBuilder: (TextEditingValue textEditingValue) {
+          List<Country> matches = [];
+          if (textEditingValue.text.length > 2) {
+            matches = context
+                .read<QuizBloc>()
+                .countriesBloc
+                .state
+                .countries
+                .where(
+                  (Country c) => c.name.toLowerCase().contains(
+                        textEditingValue.text.toLowerCase(),
+                      ),
+                )
+                .toList();
+          }
 
-            return matches;
-          },
-          optionsViewBuilder: _optionsViewBuilder,
-          onSelected: (country) {
-            context.read<QuizBloc>().add(CountryEntered(country: country));
-          }),
-    );
+          return matches;
+        },
+        optionsViewBuilder: _optionsViewBuilder,
+        onSelected: (country) {
+          context.read<QuizBloc>().add(CountryEntered(country: country));
+        });
   }
 
   Widget _optionsViewBuilder(context,
