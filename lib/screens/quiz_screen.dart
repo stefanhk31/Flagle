@@ -41,11 +41,11 @@ class QuizScreen extends StatelessWidget {
           } else {
             return BlocConsumer<QuizBloc, QuizState>(
               listener: (context, state) {
-                void restart() => context.read<QuizBloc>().add(QuizStarted());
+                void _restart() => context.read<QuizBloc>().add(QuizStarted());
                 if (state is QuizWon) {
-                  showEndOfGameDialog('You Won!', restart, context);
+                  _showEndOfGameDialog('You Won!', _restart, context);
                 } else if (state is QuizLost) {
-                  showEndOfGameDialog('You Lost. :(', restart, context);
+                  _showEndOfGameDialog('You Lost. :(', _restart, context);
                 }
               },
               builder: ((context, state) {
@@ -100,7 +100,7 @@ class QuizScreen extends StatelessWidget {
     );
   }
 
-  void showEndOfGameDialog(
+  void _showEndOfGameDialog(
       String title, Function restart, BuildContext context) {
     var countryName = context.read<QuizBloc>().state.country!.name;
     showDialog(
