@@ -18,23 +18,37 @@ class CountryEntryField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _CountryAutocomplete(
+        autocompleteKey: _autocompleteKey,
+        focusNode: _focusNode,
+        textEditingController: _textEditingController);
+  }
+}
+
+class _CountryAutocomplete extends StatelessWidget {
+  const _CountryAutocomplete({
+    Key? key,
+    required GlobalKey<State<StatefulWidget>> autocompleteKey,
+    required FocusNode focusNode,
+    required TextEditingController textEditingController,
+  })  : _autocompleteKey = autocompleteKey,
+        _focusNode = focusNode,
+        _textEditingController = textEditingController,
+        super(key: key);
+
+  final GlobalKey<State<StatefulWidget>> _autocompleteKey;
+  final FocusNode _focusNode;
+  final TextEditingController _textEditingController;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: RawAutocomplete<Country>(
           key: _autocompleteKey,
           focusNode: _focusNode,
           textEditingController: _textEditingController,
-          fieldViewBuilder:
-              (context, textEditingController, focusNode, onFieldSubmitted) {
-            return TextFormField(
-              controller: textEditingController,
-              focusNode: focusNode,
-              onFieldSubmitted: (String value) {
-                onFieldSubmitted();
-              },
-            );
-          },
-          displayStringForOption: (country) => country.name,
+          fieldViewBuilder: _fieldViewBuilder,
           optionsBuilder: (TextEditingValue textEditingValue) {
             List<Country> matches = [];
             if (textEditingValue.text.length > 2) {
@@ -53,36 +67,48 @@ class CountryEntryField extends StatelessWidget {
 
             return matches;
           },
-          optionsViewBuilder: (context,
-              AutocompleteOnSelected<Country> onSelected,
-              Iterable<Country> options) {
-            return Align(
-              alignment: Alignment.topLeft,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 150.0),
-                child: Material(
-                  child: ListView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      itemCount: options.length,
-                      itemBuilder: ((context, index) {
-                        final Country option = options.elementAt(index);
-                        return GestureDetector(
-                          onTap: () {
-                            onSelected(option);
-                          },
-                          child: ListTile(
-                            title: Text(option.name),
-                          ),
-                        );
-                      })),
-                ),
-              ),
-            );
-          },
+          optionsViewBuilder: _optionsViewBuilder,
           onSelected: (country) {
             context.read<QuizBloc>().add(CountryEntered(country: country));
           }),
+    );
+  }
+
+  Widget _optionsViewBuilder(context,
+      AutocompleteOnSelected<Country> onSelected, Iterable<Country> options) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 150.0),
+        child: Material(
+          child: ListView.builder(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              itemCount: options.length,
+              itemBuilder: ((context, index) {
+                final Country option = options.elementAt(index);
+                return GestureDetector(
+                  onTap: () {
+                    onSelected(option);
+                  },
+                  child: ListTile(
+                    title: Text(option.name),
+                  ),
+                );
+              })),
+        ),
+      ),
+    );
+  }
+
+  Widget _fieldViewBuilder(
+      context, textEditingController, focusNode, onFieldSubmitted) {
+    return TextFormField(
+      controller: textEditingController,
+      focusNode: focusNode,
+      onFieldSubmitted: (String value) {
+        onFieldSubmitted();
+      },
     );
   }
 }
