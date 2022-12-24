@@ -18,67 +18,71 @@ class CountryEntryField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: RawAutocomplete<Country>(
-              key: _autocompleteKey,
-              focusNode: _focusNode,
-              textEditingController: _textEditingController,
-              fieldViewBuilder: (context, textEditingController, focusNode,
-                  onFieldSubmitted) {
-                return TextFormField(
-                  controller: textEditingController,
-                  focusNode: focusNode,
-                  onFieldSubmitted: (String value) {
-                    onFieldSubmitted();
-                  },
-                );
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: RawAutocomplete<Country>(
+          key: _autocompleteKey,
+          focusNode: _focusNode,
+          textEditingController: _textEditingController,
+          fieldViewBuilder:
+              (context, textEditingController, focusNode, onFieldSubmitted) {
+            return TextFormField(
+              controller: textEditingController,
+              focusNode: focusNode,
+              onFieldSubmitted: (String value) {
+                onFieldSubmitted();
               },
-              displayStringForOption: (country) => country.name,
-              optionsBuilder: (TextEditingValue textEditingValue) {
-                List<Country> matches = [];
-                if (textEditingValue.text.length > 2) {
-                  matches = context
-                      .read<QuizBloc>()
-                      .countriesBloc
-                      .state
-                      .countries
-                      .where(
-                        (Country c) => c.name.toLowerCase().contains(
-                              textEditingValue.text.toLowerCase(),
-                            ),
-                      )
-                      .toList();
-                }
+            );
+          },
+          displayStringForOption: (country) => country.name,
+          optionsBuilder: (TextEditingValue textEditingValue) {
+            List<Country> matches = [];
+            if (textEditingValue.text.length > 2) {
+              matches = context
+                  .read<QuizBloc>()
+                  .countriesBloc
+                  .state
+                  .countries
+                  .where(
+                    (Country c) => c.name.toLowerCase().contains(
+                          textEditingValue.text.toLowerCase(),
+                        ),
+                  )
+                  .toList();
+            }
 
-                return matches;
-              },
-              optionsViewBuilder: (context,
-                  AutocompleteOnSelected<Country> onSelected,
-                  Iterable<Country> options) {
-                return Material(
-                  elevation: 4.0,
-                  child: ListView(
-                    children: options
-                        .map((Country option) => GestureDetector(
-                              onTap: () {
-                                onSelected(option);
-                              },
-                              child: ListTile(
-                                title: Text(option.name),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                );
-              },
-              onSelected: (country) {
-                context.read<QuizBloc>().add(CountryEntered(country: country));
-              }),
-        ),
-      ),
+            return matches;
+          },
+          optionsViewBuilder: (context,
+              AutocompleteOnSelected<Country> onSelected,
+              Iterable<Country> options) {
+            return Align(
+              alignment: Alignment.topLeft,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 150.0),
+                child: Material(
+                  child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: options.length,
+                      itemBuilder: ((context, index) {
+                        final Country option = options.elementAt(index);
+                        return GestureDetector(
+                          onTap: () {
+                            onSelected(option);
+                          },
+                          child: ListTile(
+                            title: Text(option.name),
+                          ),
+                        );
+                      })),
+                ),
+              ),
+            );
+          },
+          onSelected: (country) {
+            context.read<QuizBloc>().add(CountryEntered(country: country));
+          }),
     );
   }
 }
