@@ -104,19 +104,20 @@ class QuizScreen extends StatelessWidget {
       String title, Function restart, BuildContext context) {
     var countryName = context.read<QuizBloc>().state.country!.name;
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text(title),
-              content: Text('This is the flag of $countryName.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context, 'Play Again!');
-                    restart();
-                  },
-                  child: const Text('Play Again!'),
-                ),
-              ],
-            ));
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text('This is the flag of $countryName.'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'Play Again!');
+              restart();
+            },
+            child: const Text('Play Again!'),
+          ),
+        ],
+      ),
+    );
   }
 }
