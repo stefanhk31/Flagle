@@ -4,41 +4,111 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CountryEntryField extends StatelessWidget {
-  const CountryEntryField({
+  final TextEditingController _textEditingController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  final GlobalKey _autocompleteKey = GlobalKey();
+
+  CountryEntryField({
     Key? key,
   }) : super(key: key);
 
+  void clear() {
+    _textEditingController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Autocomplete<Country>(
-              displayStringForOption: (country) => country.name,
-              optionsBuilder: (TextEditingValue textEditingValue) {
-                List<Country> matches = [];
-                if (textEditingValue.text.length > 2) {
-                  matches = context
-                      .read<QuizBloc>()
-                      .countriesBloc
-                      .state
-                      .countries
-                      .where(
-                        (Country c) => c.name.toLowerCase().contains(
-                              textEditingValue.text.toLowerCase(),
-                            ),
-                      )
-                      .toList();
-                }
+    return _CountryAutocomplete(
+        autocompleteKey: _autocompleteKey,
+        focusNode: _focusNode,
+        textEditingController: _textEditingController);
+  }
+}
 
-                return matches;
-              },
-              onSelected: (country) {
-                context.read<QuizBloc>().add(CountryEntered(country: country));
-              }),
+class _CountryAutocomplete extends StatelessWidget {
+  const _CountryAutocomplete({
+    Key? key,
+    required GlobalKey<State<StatefulWidget>> autocompleteKey,
+    required FocusNode focusNode,
+    required TextEditingController textEditingController,
+  })  : _autocompleteKey = autocompleteKey,
+        _focusNode = focusNode,
+        _textEditingController = textEditingController,
+        super(key: key);
+
+  final GlobalKey<State<StatefulWidget>> _autocompleteKey;
+  final FocusNode _focusNode;
+  final TextEditingController _textEditingController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: RawAutocomplete<Country>(
+          key: _autocompleteKey,
+          focusNode: _focusNode,
+          textEditingController: _textEditingController,
+          fieldViewBuilder: _fieldViewBuilder,
+          optionsBuilder: (TextEditingValue textEditingValue) {
+            List<Country> matches = [];
+            if (textEditingValue.text.length > 2) {
+              matches = context
+                  .read<QuizBloc>()
+                  .countriesBloc
+                  .state
+                  .countries
+                  .where(
+                    (Country c) => c.name.toLowerCase().contains(
+                          textEditingValue.text.toLowerCase(),
+                        ),
+                  )
+                  .toList();
+            }
+
+            return matches;
+          },
+          optionsViewBuilder: _optionsViewBuilder,
+          onSelected: (country) {
+            context.read<QuizBloc>().add(CountryEntered(country: country));
+          }),
+    );
+  }
+
+  Widget _optionsViewBuilder(context,
+      AutocompleteOnSelected<Country> onSelected, Iterable<Country> options) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 150.0),
+        child: Material(
+          child: ListView.builder(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              itemCount: options.length,
+              itemBuilder: ((context, index) {
+                final Country option = options.elementAt(index);
+                return GestureDetector(
+                  onTap: () {
+                    onSelected(option);
+                  },
+                  child: ListTile(
+                    title: Text(option.name),
+                  ),
+                );
+              })),
         ),
       ),
+    );
+  }
+
+  Widget _fieldViewBuilder(
+      context, textEditingController, focusNode, onFieldSubmitted) {
+    return TextFormField(
+      controller: textEditingController,
+      focusNode: focusNode,
+      onFieldSubmitted: (String value) {
+        onFieldSubmitted();
+      },
     );
   }
 }
