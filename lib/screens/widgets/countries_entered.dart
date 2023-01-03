@@ -24,19 +24,23 @@ class CountriesEntered extends StatelessWidget {
               Text(
                 countries[index].name,
               ),
-              countries[index].name == country!.name
-                  ? const Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    )
-                  : const Icon(
-                      Icons.close,
-                      color: Colors.red,
-                    ),
+              _quizIcon(index),
             ],
           );
         },
         separatorBuilder: ((context, index) => const Divider()),
         itemCount: countries.length);
+  }
+
+  Icon _quizIcon(int index) {
+    return countries[index].name == country!.name
+        ? const Icon(
+            Icons.check,
+            color: Colors.green,
+          )
+        : const Icon(
+            Icons.close,
+            color: Colors.red,
+          );
   }
 }
