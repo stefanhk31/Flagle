@@ -1,5 +1,6 @@
 import 'package:flagle/countries/countries_bloc.dart';
 import 'package:flagle/data/country_repository.dart';
+import 'package:flagle/data/distance_repository.dart';
 import 'package:flagle/quiz/quiz_bloc.dart';
 import 'package:flagle/screens/widgets/widgets.dart';
 
@@ -16,6 +17,7 @@ class QuizScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        RepositoryProvider(create: (context) => DistanceRepository()),
         RepositoryProvider(create: (context) => CountryRepository()),
         BlocProvider(
           create: (context) =>
