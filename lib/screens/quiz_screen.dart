@@ -1,7 +1,9 @@
 import 'package:flagle/countries/countries_bloc.dart';
 import 'package:flagle/data/country_repository.dart';
 import 'package:flagle/data/distance_repository.dart';
+import 'package:flagle/distance/distance_bloc.dart';
 import 'package:flagle/quiz/quiz_bloc.dart';
+import 'package:flagle/screens/widgets/unit_picker.dart';
 import 'package:flagle/screens/widgets/widgets.dart';
 
 import 'package:flutter/material.dart';
@@ -24,8 +26,12 @@ class QuizScreen extends StatelessWidget {
               CountriesBloc(RepositoryProvider.of<CountryRepository>(context)),
         ),
         BlocProvider(
-            create: (context) =>
-                QuizBloc(BlocProvider.of<CountriesBloc>(context))),
+          create: (context) =>
+              QuizBloc(BlocProvider.of<CountriesBloc>(context)),
+        ),
+        BlocProvider(
+          create: (context) => DistanceBloc(),
+        ),
       ],
       child: BlocBuilder<CountriesBloc, CountriesState>(
         builder: (context, state) {
@@ -75,6 +81,7 @@ class QuizScreen extends StatelessWidget {
                                   .country!
                                   .flagSrc),
                           CountryEntryField(),
+                          const UnitPicker(),
                           Expanded(
                             child: CountriesEntered(
                               countries: context

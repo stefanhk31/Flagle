@@ -1,5 +1,5 @@
 import 'package:flagle/data/distance_repository.dart';
-import 'package:flagle/data/models/distance.dart';
+import 'package:flagle/distance/distance_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flagle/data/models/country.dart';
@@ -40,10 +40,11 @@ class CountriesEntered extends StatelessWidget {
       throw Exception('No answer country');
     }
 
-    //refactor unit into a property that is customizable in the UI
+    final unit = context.read<DistanceBloc>().state.unit;
+
     final distance = context
         .read<DistanceRepository>()
-        .getDistance(enteredCountry, country!, Unit.mi);
+        .getDistance(enteredCountry, country!, unit);
 
     return Text(
         '${distance.distance.ceil()} ${distance.unit.name} from correct answer');
