@@ -12,7 +12,11 @@ void main() {
       testCountries = TestUtilities.generateTestCountries(1);
     });
 
-    test('supports value equality', () {});
+    test('supports value equality', () {
+      final instanceA = QuizState.initial();
+      final instanceB = QuizState.initial();
+      expect(instanceA, equals(instanceB));
+    });
 
     group('copyWith', () {
       test('updates country', () {

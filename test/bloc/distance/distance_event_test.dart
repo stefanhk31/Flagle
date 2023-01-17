@@ -1,5 +1,3 @@
-import 'dart:js_util';
-
 import 'package:flagle/data/models/distance.dart';
 import 'package:flagle/distance/distance_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
